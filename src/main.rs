@@ -53,8 +53,9 @@ fn main() {
 // 
 
     let path: String = String::from("../questions/question_05.txt");
-    let (left, right): (Vec<Vec<i64>>, Vec<Vec<i64>>) = read_coordinates(&path_a);
-
+    //let (left, right): (Vec<Vec<i64>>, Vec<Vec<i64>>) = read_coordinates(&path_a);
+    let left = vec![vec![1, 2], vec![11, 4]];
+    let right = vec![vec![1, 5], vec![2, 4]];
     let question_05: i64 = number_of_crosses(left, right);
 
 
