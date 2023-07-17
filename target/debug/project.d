@@ -1,0 +1,1 @@
+C:\Users\emanu\OneDrive\Desktop\progetti_RUST\adventofcode2021\project\target\debug\project.exe: C:\Users\emanu\OneDrive\Desktop\progetti_RUST\adventofcode2021\project\src\functions.rs C:\Users\emanu\OneDrive\Desktop\progetti_RUST\adventofcode2021\project\src\main.rs C:\Users\emanu\OneDrive\Desktop\progetti_RUST\adventofcode2021\project\src\utils_func.rs
