@@ -371,7 +371,18 @@ fn max_of_side(side: &Vec<Vec<i64>>) -> i64 {
     *higher
 }
 
-pub fn draw_wall_points(
+pub fn make_range(start: i64, end: i64) -> Vec<i64> {
+
+    let diff = end - start;
+    if diff > 0 {
+        return (start..=end).collect();
+    } else {
+        return (end..=start).rev().collect();
+    }
+
+}
+
+fn draw_wall_points(
     left: Vec<Vec<i64>>, 
     right: Vec<Vec<i64>>
 ) -> Vec<Vec<i64>> {
@@ -379,16 +390,10 @@ pub fn draw_wall_points(
     let n_coords = left.len();
     let max_of_left = max_of_side(&left);
     let max_of_right = max_of_side(&right);
-    let max_of_coords = max_of_left.max(max_of_right);
+    let max_of_coords = max_of_left.max(max_of_right) + 1;
     let mut map = vec![vec![0; max_of_coords as usize]; max_of_coords as usize];
 
-    println!("{:?}", left);
-    println!("{:?}", right);
-    println!("{:?}", max_of_coords);
-
     for coords in 0..n_coords {
-
-        println!("coords {:?}", coords);
 
         let left_left = left[coords as usize][0];
         let left_right = left[coords as usize][1];
@@ -399,70 +404,50 @@ pub fn draw_wall_points(
         let second_diff = right_right - left_right;
 
         if first_diff == 0 {
-            let second_range: Vec<i64> = (0..=second_diff).map(|x| left_right + x).collect();
-            println!("{:?}", second_range);
+            let second_range: Vec<i64> = make_range(left_right, right_right);
 
             for i in 0..second_range.len() {
-                let new_right = second_range[i]; 
-                println!("{:?}", new_right);
-                if new_right < max_of_coords {
-                    map[left_left as usize][new_right as usize] += 1;
-                    println!("good {} {}", new_right, max_of_coords);
-                } else {
-                    println!("bad {} {}", new_right, max_of_coords);
-                }
+                map[left_left as usize][second_range[i] as usize] += 1;
             }
         }
 
         if second_diff == 0 {
-            let first_range: Vec<i64> = (0..=first_diff).map(|x| left_left + x).collect();
+            let first_range: Vec<i64> = make_range(left_left, right_left);
 
             for i in 0..first_range.len() {
-                let new_left = first_range[i];
-                println!("{:?}", new_left);
-                if new_left < max_of_coords {
-                    map[new_left as usize][right_right as usize] += 1;
-                    println!("good {} {}", new_left, max_of_coords);
-                } else {
-                println!("bad {} {}", new_left, max_of_coords);
-                }
+                map[first_range[i] as usize][left_right as usize] += 1;
             }
         }
 
         if first_diff != 0 && second_diff != 0 {
-            let first_range: Vec<i64> = (0..=first_diff).map(|x| left_left + x).collect();
-            let second_range: Vec<i64> = (0..=second_diff).map(|x| right_right + x).collect();
+            let first_range: Vec<i64> = make_range(left_left, right_left);            
+            let second_range: Vec<i64> = make_range(left_right, right_right);
 
             for i in 0..first_range.len() {
-                let new_left = first_range[i]; 
-                let new_right = second_range[i]; 
-
-                
-                println!("{:?}", new_left);
-                println!("{:?}", new_right);
-
-                if new_right < max_of_coords && new_left < max_of_coords {
-                    map[new_left as usize][new_right as usize] += 1;
-                    println!("good {} {}", new_right, max_of_coords);
-                } else {
-                    println!("bad {} {}", new_left, max_of_coords);
-                    println!("bad {} {}", new_right, max_of_coords);
-                }
+                map[first_range[i] as usize][second_range[i] as usize] += 1;
             }
-            
-            println!("{:?}", map);
         }
-
     }
+
     map
 }
 
+
 pub fn number_of_crosses(left: Vec<Vec<i64>>, right: Vec<Vec<i64>>) -> i64 {
-    let map = draw_wall_points(left, right);
+    let map: Vec<Vec<i64>> = draw_wall_points(left, right);
 
-    println!("{:?}", &map);
+    let mut counter: i64 = 0;
 
-    0
+    for row in map {
+        println!("{:?}", &row);
+
+        for element in row {
+            if element > 1 {
+                counter += 1;
+            }
+        }
+    }
+    counter
 }
 
 

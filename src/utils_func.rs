@@ -116,7 +116,7 @@ pub fn read_coordinates(path: &str) -> (Vec<Vec<i64>>, Vec<Vec<i64>>) {
             let pairs: Vec<&str> = single_draws.split(" -> ").collect();
 
             if pairs.len() != 2 {
-                continue; // Skip invalid lines
+                continue;
             }
 
             let left_elements: Vec<i64> = pairs[0]
