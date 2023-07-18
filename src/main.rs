@@ -74,7 +74,7 @@ fn main() {
     let path: String = String::from("../questions/question_07.txt");
     //let start_state: Vec<i64> = read_draws(&path);
 
-    let mut start_state: Vec<i64> = vec![16,1,2,0,4,2,7,1,2,14];
+    let start_state: Vec<i64> = vec![16,1,2,0,4,2,7,1,2,14];
 
     let question_07: i64 = fuel_consumption_best_position(&start_state);
     println!("{}: {:?}", "Question #7 ", question_07); 
