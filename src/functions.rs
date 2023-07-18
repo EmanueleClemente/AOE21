@@ -566,9 +566,23 @@ pub fn fuel_consumption_best_position(start_state: &Vec<i64>) -> i64 {
     sum_of_fuel
 }
 
-pub fn fuel_consumption_best_position_add_step(start_state: &Vec<i64>) -> i64 {
+pub fn fuel_consumption_best_position_add_step(start_state: &Vec<i64>) -> i64 { // no! sbagliato
 
     // formula consumo : n * (n+1) / 2
 
-    0
+    let n_states: usize = start_state.len();
+    let half_states: i64 = n_states as i64 / 2;
+
+    let mut state: Vec<i64> = start_state.clone().iter().map(|x| x * (x + 1) / 2).collect();
+
+    state.sort();
+
+    let average_pos: i64 = state[half_states as usize]; // la migliore posizione è la mediana della serie
+
+    let mut sum_of_fuel: i64 = 0;
+    for each in state {
+        sum_of_fuel += (each - average_pos).abs();
+    }
+
+    sum_of_fuel
 }
