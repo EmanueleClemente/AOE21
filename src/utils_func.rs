@@ -135,6 +135,3 @@ pub fn read_coordinates(path: &str) -> (Vec<Vec<i64>>, Vec<Vec<i64>>) {
 
     (left, right)
 }
-    
-
-

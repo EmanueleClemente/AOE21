@@ -384,7 +384,8 @@ pub fn make_range(start: i64, end: i64) -> Vec<i64> {
 
 fn draw_wall_points(
     left: Vec<Vec<i64>>, 
-    right: Vec<Vec<i64>>
+    right: Vec<Vec<i64>>,
+    draw_diagonal: bool
 ) -> Vec<Vec<i64>> {
 
     let n_coords = left.len();
@@ -419,7 +420,7 @@ fn draw_wall_points(
             }
         }
 
-        if first_diff != 0 && second_diff != 0 {
+        if first_diff != 0 && second_diff != 0 && draw_diagonal {
             let first_range: Vec<i64> = make_range(left_left, right_left);            
             let second_range: Vec<i64> = make_range(left_right, right_right);
 
@@ -433,13 +434,12 @@ fn draw_wall_points(
 }
 
 
-pub fn number_of_crosses(left: Vec<Vec<i64>>, right: Vec<Vec<i64>>) -> i64 {
-    let map: Vec<Vec<i64>> = draw_wall_points(left, right);
+pub fn number_of_crosses(left: Vec<Vec<i64>>, right: Vec<Vec<i64>>, draw_diagonal: bool) -> i64 {
+    let map: Vec<Vec<i64>> = draw_wall_points(left, right, draw_diagonal);
 
     let mut counter: i64 = 0;
 
     for row in map {
-        println!("{:?}", &row);
 
         for element in row {
             if element > 1 {
@@ -450,6 +450,125 @@ pub fn number_of_crosses(left: Vec<Vec<i64>>, right: Vec<Vec<i64>>) -> i64 {
     counter
 }
 
+struct FishSchool {
+    members: Vec<Fish>,
+    new_gen: Vec<Fish>
+}
+
+impl FishSchool {
+
+    fn new() -> FishSchool {
+        FishSchool { members: Vec::new(), new_gen: Vec::new() }
+    }
+
+    fn add_fish(&mut self, fish_timer: i64) {
+        let mut new_fish: Fish = Fish::new();
+        new_fish.create_fish(fish_timer);
+        self.members.push( new_fish );
+    }
+
+    fn amount_of_fish(self) -> i64 {
+        self.members.len() as i64
+    }
+
+    fn run_generation(&mut self) {
+        self.new_gen.clear();
+
+        for each_fish in &mut self.members {
+
+            if each_fish.timer == 0 {
+                let new_fish: Fish = Fish::new();
+                self.new_gen.push( new_fish );
+            }
+            
+            each_fish.update_fish();
+        }
+        self.members.extend(self.new_gen.clone());
+    }
+}
+
+#[derive(Clone, Debug)]
+struct Fish {
+    timer: i64
+}
+
+impl Fish {
+
+    fn new() -> Fish {
+        Fish { timer: 8 }
+    }
+    
+    fn create_fish(&mut self, set_timer: i64) {
+        self.timer = set_timer;
+    }
+    
+    fn update_fish(&mut self) {
+        if self.timer > 0 {
+            self.timer -= 1;
+        } else if self.timer == 0 {
+            self.timer = 6;
+        } 
+    }
+}
 
 
+pub fn fish_simulator(start_state: &Vec<i64>, n_sims: i64) -> i64 {
 
+    if n_sims == 0 {
+        return start_state.len() as i64;
+    }
+    
+    let mut school: FishSchool = FishSchool::new();
+    for fish in start_state {
+        school.add_fish(*fish);
+    }
+
+    for _ in 0..n_sims {
+        school.run_generation();
+    }
+
+    school.amount_of_fish()
+}
+
+pub fn fish_simulator_improved(start_state: &Vec<i64>, n_sims: i64) -> i64 {
+
+    let mut initial_state: Vec<i64> = vec![0; 9];
+
+    for each in start_state {
+        initial_state[*each as usize] += 1;
+    }
+
+    for _ in 0..n_sims {
+        let popped = initial_state.remove(0);
+        initial_state[6] += popped;
+        initial_state.push(popped);
+    }
+
+    initial_state.iter().sum()
+}
+
+pub fn fuel_consumption_best_position(start_state: &Vec<i64>) -> i64 {
+
+    let n_states: usize = start_state.len();
+    let half_states: i64 = n_states as i64 / 2;
+
+    let mut state = start_state.clone();
+
+    state.sort();
+
+    let average_pos: i64 = state[half_states as usize]; // la migliore posizione è la mediana della serie
+
+    let mut sum_of_fuel: i64 = 0;
+    for each in state {
+        sum_of_fuel += (each - average_pos).abs();
+    }
+
+    sum_of_fuel
+}
+
+pub fn fuel_consumption_best_position_add_step(start_state: &Vec<i64>) -> i64 {
+
+    // formula consumo : n * (n+1) / 2
+
+    0
+}

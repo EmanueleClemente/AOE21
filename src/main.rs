@@ -53,14 +53,31 @@ fn main() {
 // 
 
     let path: String = String::from("../questions/question_05.txt");
-    //let (left, right): (Vec<Vec<i64>>, Vec<Vec<i64>>) = read_coordinates(&path);
-    
-    let left = vec![vec![3, 2], vec![0, 5], vec![5, 0]];
-    let right = vec![vec![3, 6], vec![7, 5], vec![0, 5]];
-    let question_05: i64 = number_of_crosses(left, right);
+    let (left, right): (Vec<Vec<i64>>, Vec<Vec<i64>>) = read_coordinates(&path);
+
+    let question_05: i64 = number_of_crosses(left, right, true);
     println!("{}: {:?}", "Question #5 ", question_05); 
 
-    // 2120 low , 22088 high
+    // 
+
+    let path: String = String::from("../questions/question_06.txt");
+    let start_state: Vec<i64> = read_draws(&path);
+
+    let question_06: i64 = fish_simulator(&start_state, 80);
+    println!("{}: {:?}", "Question #6 ", question_06); 
+
+    let question_06B: i64 = fish_simulator_improved(&start_state, 256);
+    println!("{}: {:?}", "Question #6B", question_06B); 
+
+    // 
+
+    let path: String = String::from("../questions/question_07.txt");
+    let start_state: Vec<i64> = read_draws(&path);
+
+    //let mut start_state: Vec<i64> = vec![16,1,2,0,4,2,7,1,2,14];
+
+    let question_07: i64 = fuel_consumption_best_position(&start_state);
+    println!("{}: {:?}", "Question #7 ", question_07); 
 
 
  }
