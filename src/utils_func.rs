@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{self, BufRead, BufReader};
 use std::collections::HashMap;
 
 pub fn read_data(path: &String) -> Vec<i64> {
@@ -135,3 +135,28 @@ pub fn read_coordinates(path: &str) -> (Vec<Vec<i64>>, Vec<Vec<i64>>) {
 
     (left, right)
 }
+
+pub fn read_signals(path: &str) -> io::Result<(Vec<Vec<String>>, Vec<Vec<String>>)> {
+    let file = File::open(path)?;
+    let reader = BufReader::new(file);
+
+    let mut input: Vec<Vec<String>> = Vec::new();
+    let mut output: Vec<Vec<String>> = Vec::new();
+
+    for line in reader.lines() {
+        let line = line?;
+        let mut splitter = line.split('|');
+
+        if let (Some(left), Some(right)) = (splitter.next(), splitter.next()) {
+            let splitted_left: Vec<String> = left.trim().split(' ').map(|s| s.to_string()).collect();
+            let splitted_right: Vec<String> = right.trim().split(' ').map(|s| s.to_string()).collect();
+
+            input.push(splitted_left);
+            output.push(splitted_right);
+        }
+    }
+
+    Ok((input, output))
+}
+
+

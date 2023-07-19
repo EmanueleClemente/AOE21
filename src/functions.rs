@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, f64::INFINITY, process::Output};
 
 pub fn count_increases_in_measurements(measures: &Vec<i64>) -> usize {
     let n_measures: usize = measures.len();
@@ -566,23 +566,89 @@ pub fn fuel_consumption_best_position(start_state: &Vec<i64>) -> i64 {
     sum_of_fuel
 }
 
-pub fn fuel_consumption_best_position_add_step(start_state: &Vec<i64>) -> i64 { // no! sbagliato
+pub fn fuel_consumption_best_position_add_step(start_state: &Vec<i64>) -> i64 {
 
-    // formula consumo : n * (n+1) / 2
+    let max_position: i64 = *start_state.iter().max().unwrap();
 
-    let n_states: usize = start_state.len();
-    let half_states: i64 = n_states as i64 / 2;
+    let mut best_consumption: i64 = INFINITY as i64;
 
-    let mut state: Vec<i64> = start_state.clone().iter().map(|x| x * (x + 1) / 2).collect();
+    for pos in 0..max_position {
 
-    state.sort();
+        let mut sum_of_fuel: i64 = 0;
 
-    let average_pos: i64 = state[half_states as usize]; // la migliore posizione è la mediana della serie
+        for each in start_state {
+            let consumption: i64 = (*each - pos).abs();
+            sum_of_fuel += consumption * (1 + consumption) / 2;
+            if sum_of_fuel > best_consumption {
+                break
+            }
+        }
 
-    let mut sum_of_fuel: i64 = 0;
-    for each in state {
-        sum_of_fuel += (each - average_pos).abs();
+        if sum_of_fuel < best_consumption {
+            best_consumption = sum_of_fuel;
+        }
     }
 
-    sum_of_fuel
+    best_consumption
 }
+
+
+
+pub fn count_simple_digits(input: &Vec<Vec<String>>, output: &Vec<Vec<String>>) -> i64 {
+
+    /*  digit   -> len
+        0       -> 6
+        1       -> 2 **
+        2       -> 5
+        3       -> 5
+        4       -> 4 **
+        5       -> 5
+        6       -> 6
+        7       -> 3 **
+        8       -> 7 **
+        9       -> 6
+
+        len     -> group
+        2       -> 2
+        3       -> 7
+        4       -> 4
+        5       -> 2 3 5
+        6       -> 0 6 9
+        7       -> 8
+     */
+    let mut counter: Vec<i64> = vec![0; 10];
+
+    for each_line in output {
+        for each_element in each_line {
+            counter[each_element.len() as usize] += 1;
+        }
+    }
+
+    counter[2] + counter[4] + counter[3] + counter[7]
+}
+
+fn string2bit(string: &str) -> Vec<i64> {
+    let start: Vec<String> = vec!["a", "b", "c", "d", "e", "f", "g"].iter().map(|x| x.to_string()).collect();
+
+    let n_chars = string.len();
+    let mut out_string: Vec<i64> = vec![0; 7];
+
+    for ch in string.chars() {
+        for (index, candidate) in start.iter().map(|x| x.to_string()).enumerate() {
+            if ch.to_string() == candidate {
+                out_string[index] += 1;
+            }
+        }
+    }
+    out_string
+}
+
+pub fn count_hard_digits(input: &Vec<Vec<String>>, output: &Vec<Vec<String>>) -> i64 {
+
+    println!("{:?}", string2bit("cefbgd"));
+    println!("{:?}\n", string2bit("cbdgef"));
+    println!("{:?}", string2bit("fbcad"));
+    println!("{:?}\n", string2bit("cdbaf"));
+    0
+}
+

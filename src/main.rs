@@ -72,15 +72,31 @@ fn main() {
     // 
 
     let path: String = String::from("../questions/question_07.txt");
-    //let start_state: Vec<i64> = read_draws(&path);
-
-    let start_state: Vec<i64> = vec![16,1,2,0,4,2,7,1,2,14];
+    let start_state: Vec<i64> = read_draws(&path);
 
     let question_07: i64 = fuel_consumption_best_position(&start_state);
     println!("{}: {:?}", "Question #7 ", question_07); 
 
     let question_07B: i64 = fuel_consumption_best_position_add_step(&start_state);
     println!("{}: {:?}", "Question #7B", question_07B); 
+
+    // 
+
+    let path: String = String::from("../questions/q8test.txt");
+    match read_signals(&path) {
+        Ok((input, output)) => {
+
+            let question_08: i64 = count_simple_digits(&input, &output);
+            println!("{}: {:?}", "Question #8 ", question_08); 
+
+            let question_08B: i64 = count_hard_digits(&input, &output);
+            println!("{}: {:?}", "Question #8B", question_08B); 
+
+        }
+        Err(err) => eprintln!("Error: {}", err),
+    }
+
+
 
 
  }
